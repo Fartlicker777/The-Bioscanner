@@ -32,7 +32,7 @@ public class TheBioscanner : MonoBehaviour {
 
    int[] GlyphNumbers = new int[3];
    int[] GlyphRandomized = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-   int[] GlyphNumbersRandomized = new int[52];
+   List<int> GlyphNumbersRandomized = new List<int>();
    int EdgeworkBullshit;
    int GlyphOffset;
 
@@ -199,11 +199,9 @@ public class TheBioscanner : MonoBehaviour {
    void GenerateGlyphs () {
       GlyphOffset = UnityEngine.Random.Range(0, 6);
       NumbersOfShifting.text = GlyphOffset.ToString();
-      for (int i = 0; i < 52; i++) {
-         if ((i + GlyphOffset) % 55 != GlyphNumbers[0] + GlyphOffset % 55 && (i + GlyphOffset) % 55 != GlyphNumbers[1] + GlyphOffset % 55 && (i + GlyphOffset) % 55 != GlyphNumbers[2] + GlyphOffset % 55) {
-            GlyphNumbersRandomized[i] = (i + GlyphOffset) % 55;
-         }
-      }
+      var GlyphNumbersAfterShift = GlyphNumbers.Select(a => (a + GlyphOffset) % 55).ToArray();
+      GlyphNumbersRandomized.Clear();
+      GlyphNumbersRandomized.AddRange(Enumerable.Range(0, 55).Where(a => !GlyphNumbersAfterShift.Contains(a)));
       GlyphNumbersRandomized.Shuffle();
       GlyphRandomized.Shuffle();
       Glyphs[GlyphRandomized[0]].GetComponent<SpriteRenderer>().sprite = TheGlyphsButSprites[(GlyphNumbers[0] + GlyphOffset) % 55];
@@ -267,6 +265,8 @@ public class TheBioscanner : MonoBehaviour {
       StartButtonObject.gameObject.SetActive(false);
       StartButton.transform.localPosition -= FUCKINGMOVE;
       MovingAll.gameObject.SetActive(true);
+      if (TwitchPlaysActive)
+        TheTimerForThis += 30f;
       GenerateGlyphs();
    }
 
@@ -396,23 +396,22 @@ public class TheBioscanner : MonoBehaviour {
    #region Twitch Plays
 
 #pragma warning disable 414
-   private readonly string TwitchHelpMessage = @"Use !{0} X# to select a coordinate on the module. Use !{0} start to start the module.";
+   private readonly string TwitchHelpMessage = "Use \"!{0}\" X# to select a coordinate on the module. Specify letter as column from left to right, number as row from top to bottom, in that specified column. Use \"!{0} start\" or \"!{0} activate\" to start the module. The timer is extended by 30 seconds on Twitch Plays.";
 #pragma warning restore 414
 
    IEnumerator ProcessTwitchCommand (string Command) {
       Command = Command.Trim().ToUpper();
-      yield return null;
-      if (Command == "START" || Command == "ACTIVATE") { StartButton.OnInteract(); }
-      else if (Command == "A1") { Buttons[4].OnInteract(); }
-      else if (Command == "A2") { Buttons[5].OnInteract(); }
-      else if (Command == "A3") { Buttons[6].OnInteract(); }
-      else if (Command == "B1") { Buttons[0].OnInteract(); }
-      else if (Command == "B2") { Buttons[1].OnInteract(); }
-      else if (Command == "B3") { Buttons[2].OnInteract(); }
-      else if (Command == "B4") { Buttons[3].OnInteract(); }
-      else if (Command == "C1") { Buttons[7].OnInteract(); }
-      else if (Command == "C2") { Buttons[8].OnInteract(); }
-      else if (Command == "C3") { Buttons[9].OnInteract(); }
+      if (Command == "START" || Command == "ACTIVATE") { yield return null; StartButton.OnInteract(); }
+      else if (Command == "A1") { yield return null; Buttons[4].OnInteract(); }
+      else if (Command == "A2") { yield return null; Buttons[5].OnInteract(); }
+      else if (Command == "A3") { yield return null; Buttons[6].OnInteract(); }
+      else if (Command == "B1") { yield return null; Buttons[0].OnInteract(); }
+      else if (Command == "B2") { yield return null; Buttons[1].OnInteract(); }
+      else if (Command == "B3") { yield return null; Buttons[2].OnInteract(); }
+      else if (Command == "B4") { yield return null; Buttons[3].OnInteract(); }
+      else if (Command == "C1") { yield return null; Buttons[7].OnInteract(); }
+      else if (Command == "C2") { yield return null; Buttons[8].OnInteract(); }
+      else if (Command == "C3") { yield return null; Buttons[9].OnInteract(); }
       else { yield return "sendtochaterror I don't understand!"; }
    }
 

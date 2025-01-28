@@ -433,7 +433,7 @@ GameObject:
   - component: {fileID: 114398938173749192}
   - component: {fileID: 114153544904147690}
   m_Layer: 0
-  m_Name: Template
+  m_Name: BioscannerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
