@@ -91,7 +91,8 @@ public class TheBioscanner : MonoBehaviour {
           new Dictionary<string, object>
           {
             { "Key", "Timer" },
-            { "Text", "Edit how long the timer runs (in seconds)."}
+            { "Text", "Timer" },
+            { "Description", "Edit how long the timer runs (in seconds)."}
           }
         }}
       }
